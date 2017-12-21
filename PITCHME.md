@@ -1,6 +1,6 @@
-# Sky
+# Performance of SPA
 
-### A GitPitch Presentation Template
+### How to optimize apps built on React.js
 
 ---
 
