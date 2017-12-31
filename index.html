@@ -42,6 +42,51 @@
 					<h3>How React does make render?</h3>
 					<img data-src="./assets/react-render-to-dom.gif" alt="Steps of render process">
 				</section>
+				<section>
+					<blockquote cite="https://twitter.com/dan_abramov/status/790333373864669185">
+						&ldquo;Oh, and no, React is not faster than DOM. Sorry. But it lets you build large performant apps without thinking too much about
+						performance.&rdquo;
+						<p>Dan Abramov</p>
+					</blockquote>
+				</section>
+				<section>
+					<h3>How to measure performance?</h3>
+					<ul>
+						<li class="fragment">Chrome Dev Tools</li>
+						<li class="fragment">React Dev Tools</li>
+						<li class="fragment"><code>react-addons-perf</code> + <code>?react_perf</code></li>
+						<li class="fragment">Performance API</li>
+					</ul>
+				</section>
+				<section>
+					<h3>React Dev Tools Useful Features</h3>
+					<ul>
+						<li>Highlight Updates</li>
+					</ul>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						### React Addons Perf  
+
+						```
+						npm i -d react-addons-perf
+						```
+						
+						How to use?
+						```js
+						import Perf from 'react-addons-perf'
+
+						// on will mount
+						Perf.start()
+						// on did mount
+						Perf.stop()
+
+						const msr = Perf.getLastMeasurements()
+						Perf.printInclusive(msr)
+						Perf.printWasted(msr)
+						```
+					</script>
+				</section>
 			</div>
 		</div>
 
