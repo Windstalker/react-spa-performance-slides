@@ -58,12 +58,6 @@
 						<li class="fragment">Performance API</li>
 					</ul>
 				</section>
-				<section>
-					<h3>React Dev Tools Useful Features</h3>
-					<ul>
-						<li>Highlight Updates</li>
-					</ul>
-				</section>
 				<section data-markdown>
 					<script type="text/template">
 						### React Addons Perf  
@@ -86,6 +80,47 @@
 						Perf.printWasted(msr)
 						```
 					</script>
+				</section>
+				<section>
+					<h3>Components Timing With Chrome Dev Tools</h3>
+					<code>http://localhost:3000?react_perf</code>
+					<img src="./assets/components-timing.png" alt="Components Timing"/>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						### Performance API  
+
+						```js
+						// Start with one mark.
+						performance.mark("start-mark");
+
+						// Wait some time.
+						setTimeout(function() {
+							// Mark the end of the time.
+							performance.mark("end-mark");
+
+							// Measure between the two different markers.
+							performance.measure(
+								"perf-measurement",
+								"start-mark",
+								"end-mark"
+							);
+
+							// Get all of the measures out.
+							// In this case there is only one.
+							var measures = performance.getEntriesByName("perf-measurement");
+							var measure = measures[0];
+							console.log("setTimeout milliseconds:", measure.duration)
+
+							// Clean up the stored markers.
+							performance.clearMarks();
+							performance.clearMeasures();
+						}, 1000);
+						```
+					</script>
+				</section>
+				<section>
+					<h3>Weak Points and Ways To Optimization</h3>
 				</section>
 			</div>
 		</div>
