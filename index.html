@@ -50,7 +50,7 @@
 					</blockquote>
 				</section>
 				<section>
-					<h3>How to measure performance?</h3>
+					<h3>How to measure performance of React app?</h3>
 					<ul>
 						<li class="fragment">Chrome Dev Tools</li>
 						<li class="fragment">React Dev Tools</li>
@@ -120,7 +120,114 @@
 					</script>
 				</section>
 				<section>
-					<h3>Weak Points and Ways To Optimization</h3>
+					<h2>Weak Points, Myths and Ways To Optimization</h2>
+				</section>
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+						### Stateful vs Stateless
+						```jsx
+						// Stateful
+						class StatefulGreeter extends React.Component { 
+							render () { 
+								return <h1>Hello {this.props.name}</h1>; 
+							} 
+						}
+
+						// Stateless
+						function StatelessGreeter (props) { 
+							return <h1>Hello {props.name}</h1>;
+						}
+						```
+						</script>
+					</section>
+					<section>
+						<blockquote cite="https://twitter.com/dan_abramov/status/755343749983657986">
+							&ldquo;There is no <i>“optimized”</i> support for them yet because <b>stateless</b> 
+							component is wrapped in a <b>class</b> internally. It's same code
+							path.&rdquo;
+							<p>Dan Abramov</p>
+						</blockquote>
+					</section>
+				</section>
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							### Pure Components
+							```jsx
+							// Stateful Pure Component
+							class StatefulPureGreeter extends React.Component { 
+								shouldComponentUpdate () {
+									return false;
+								}
+
+								render () { 
+									return <h1>Hello {this.props.name}, 
+										no updates for you</h1>; 
+								} 
+							}
+							```
+						</script>
+					</section>
+					<section>
+						<code><b>React.Component</b> + shallow equal => <b style="color:red;">React.PureComponent</b></code>
+					</section>
+				</section>
+				<section>
+					<h3>Lists and Keys</h3>
+					<section data-markdown>
+						<script type="text/template">
+							```jsx
+							class TodoList extends React.Component { 
+								renderTodos () {
+									return this.props.todos.map((todo, i) => {
+										// Avoid this
+										return <Todo key={i} todo={todo} />
+									})
+								}
+
+								render () { 
+									return <div>{this.renderTodos()}<div>;
+								} 
+							}
+							```
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							```jsx
+							class TodoList extends React.Component { 
+								renderTodos () {
+									return this.props.todos.map((todo, i) => {
+										// Use this
+										return <Todo key={todo.id} todo={todo} />
+									})
+								}
+
+								render () { 
+									return <div>{this.renderTodos()}<div>;
+								} 
+							}
+							```
+						</script>
+					</section>
+					<section>
+						<p><code style="color:darkcyan">key</code> property rules:</p>
+						<ol>
+							<li>Should be stable</li>
+							<li>Should be unique among siblings</li>
+						</ol>
+						<p>Possible consequences is <a href="https://codepen.io/Windstalker/pen/dJGPKb">here</a></p>
+					</section>
+					<section>
+						<p><strong>But.. what if we don't have id's?</strong></p>
+						<ul>
+							<li class="fragment">Use unique id's generator libs (uuid-js, etc.)</li>
+							<li class="fragment">Use counters</li>
+							<li class="fragment">Use indices, ONLY IF array elements are static, 
+								and array will not be changed (filtering, sorting)</li>
+						</ul>
+					</section>
 				</section>
 			</div>
 		</div>
