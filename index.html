@@ -174,6 +174,39 @@
 					</section>
 				</section>
 				<section>
+					<h3>Functions binding</h3>
+					<section data-markdown>
+						<script type="text/template">
+							Quite common case
+							```jsx
+							class TodoList extends React.Component { 
+								handleTodoClick (todoId) {
+									this.props.onTodoCheck(todoId)
+								}
+
+								renderTodos () {
+									return this.props.todos.map((todo, i) => {
+										return <Todo 
+											key={todo.id} 
+											todo={todo} 
+											onClick={() => this.handleTodoClick(todo.id)}
+										/>
+									})
+								}
+
+								render () { 
+									return <div>{this.renderTodos()}<div>;
+								} 
+							}
+							```
+						</script>
+					</section>
+					<section>
+						<h5>What's wrong?</h5>
+						<!-- TODO: describe the problem of re-rendering and recreating of functions on every render -->
+					</section>
+				</section>
+				<section>
 					<h3>Lists and Keys</h3>
 					<section data-markdown>
 						<script type="text/template">
@@ -181,7 +214,7 @@
 							class TodoList extends React.Component { 
 								renderTodos () {
 									return this.props.todos.map((todo, i) => {
-										// Avoid this
+										// Bad one, avoid this
 										return <Todo key={i} todo={todo} />
 									})
 								}
@@ -199,7 +232,7 @@
 							class TodoList extends React.Component { 
 								renderTodos () {
 									return this.props.todos.map((todo, i) => {
-										// Use this
+										// Much better!
 										return <Todo key={todo.id} todo={todo} />
 									})
 								}
@@ -228,6 +261,15 @@
 								and array will not be changed (filtering, sorting)</li>
 						</ul>
 					</section>
+				</section>
+				<section>
+					<h3>Long lists and data grids</h3>
+					<p>If you need to display huge amount of items (more than 500) in a list..</p>
+					<p class="fragment"><strong>virtualize them!</strong></p>
+					<ul>
+						<li class="fragment"><code>react-virtualized</code></li>
+						<li class="fragment"><code>react-data-grid</code></li>
+					</ul>
 				</section>
 			</div>
 		</div>
