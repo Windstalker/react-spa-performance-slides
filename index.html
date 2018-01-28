@@ -1,65 +1,70 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/sky.css">
+	<title>reveal.js</title>
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/sky.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h2>Performance of SPA built on React.js</h2>
+			</section>
+			<section>
+				<h3>React is fast, React is slow</h3>
 				<section>
-					<h2>Performance of SPA built on React.js</h2>
+					<h4>Expectations</h4>
+					<img height="200" data-src="./assets/road_runner.jpg" alt="Road Runner">
 				</section>
 				<section>
-					<h3>React is fast, React is slow</h3>
-					<section>
-						<h4>Expectations</h4>
-						<img height="200" data-src="./assets/road_runner.jpg" alt="Road Runner">
-					</section>
-					<section>
-						<h4>Reality</h4>
-						<img width="400" data-src="./assets/coyote.jpg" alt="Coyote">
-					</section>
+					<h4>Reality</h4>
+					<img width="400" data-src="./assets/coyote.jpg" alt="Coyote">
 				</section>
-				<section>
-					<h3>How React does make render?</h3>
-					<img data-src="./assets/react-render-to-dom.gif" alt="Steps of render process">
-				</section>
-				<section>
-					<blockquote cite="https://twitter.com/dan_abramov/status/790333373864669185">
-						&ldquo;Oh, and no, React is not faster than DOM. Sorry. But it lets you build large performant apps without thinking too much about
-						performance.&rdquo;
-						<p>Dan Abramov</p>
-					</blockquote>
-				</section>
-				<section>
-					<h3>How to measure performance of React app?</h3>
-					<ul>
-						<li class="fragment">Chrome Dev Tools</li>
-						<li class="fragment">React Dev Tools</li>
-						<li class="fragment"><code>react-addons-perf</code> + <code>?react_perf</code></li>
-						<li class="fragment">Performance API</li>
-					</ul>
-				</section>
-				<section data-markdown>
-					<script type="text/template">
+			</section>
+			<section>
+				<h3>How React does make render?</h3>
+				<img data-src="./assets/react-render-to-dom.gif" alt="Steps of render process">
+			</section>
+			<section>
+				<blockquote cite="https://twitter.com/dan_abramov/status/790333373864669185">
+					&ldquo;Oh, and no, React is not faster than DOM. Sorry. But it lets you build large performant apps without thinking too
+					much about performance.&rdquo;
+					<p>Dan Abramov</p>
+				</blockquote>
+			</section>
+			<section>
+				<h3>How to measure performance of React app?</h3>
+				<ul>
+					<li class="fragment">Chrome Dev Tools</li>
+					<li class="fragment">React Dev Tools</li>
+					<li class="fragment">
+						<code>react-addons-perf</code> +
+						<code>?react_perf</code>
+					</li>
+					<li class="fragment">Performance API</li>
+				</ul>
+			</section>
+			<section data-markdown>
+				<script type="text/template">
 						### React Addons Perf  
 
 						```
@@ -80,14 +85,14 @@
 						Perf.printWasted(msr)
 						```
 					</script>
-				</section>
-				<section>
-					<h3>Components Timing With Chrome Dev Tools</h3>
-					<code>http://localhost:3000?react_perf</code>
-					<img src="./assets/components-timing.png" alt="Components Timing"/>
-				</section>
-				<section data-markdown>
-					<script type="text/template">
+			</section>
+			<section>
+				<h3>Components Timing With Chrome Dev Tools</h3>
+				<code>http://localhost:3000?react_perf</code>
+				<img src="./assets/components-timing.png" alt="Components Timing" />
+			</section>
+			<section data-markdown>
+				<script type="text/template">
 						### User Timing API  
 
 						```js
@@ -118,13 +123,13 @@
 						}, 1000);
 						```
 					</script>
-				</section>
-				<section>
-					<h2>Weak Points, Myths and Ways To Optimization</h2>
-				</section>
-				<section>
-					<section data-markdown>
-						<script type="text/template">
+			</section>
+			<section>
+				<h2>Weak Points, Myths and Ways To Optimization</h2>
+			</section>
+			<section>
+				<section data-markdown>
+					<script type="text/template">
 						### Stateful vs Stateless
 						```jsx
 						// Stateful
@@ -140,19 +145,21 @@
 						}
 						```
 						</script>
-					</section>
-					<section>
-						<blockquote cite="https://twitter.com/dan_abramov/status/755343749983657986">
-							&ldquo;There is no <i>“optimized”</i> support for them yet because <b>stateless</b> 
-							component is wrapped in a <b>class</b> internally. It's same code
-							path.&rdquo;
-							<p>Dan Abramov</p>
-						</blockquote>
-					</section>
 				</section>
 				<section>
-					<section data-markdown>
-						<script type="text/template">
+					<blockquote cite="https://twitter.com/dan_abramov/status/755343749983657986">
+						&ldquo;There is no
+						<i>“optimized”</i> support for them yet because
+						<b>stateless</b>
+						component is wrapped in a
+						<b>class</b> internally. It's same code path.&rdquo;
+						<p>Dan Abramov</p>
+					</blockquote>
+				</section>
+			</section>
+			<section>
+				<section data-markdown>
+					<script type="text/template">
 							### Pure Components
 							```jsx
 							// Stateful Pure Component
@@ -168,15 +175,15 @@
 							}
 							```
 						</script>
-					</section>
-					<section>
-						<code><b>React.Component</b> + shallow equal => <b style="color:red;">React.PureComponent</b></code>
-					</section>
 				</section>
 				<section>
-					<h3>Functions binding</h3>
-					<section data-markdown>
-						<script type="text/template">
+					<code><b>React.Component</b> + shallow equal => <b style="color:red;">React.PureComponent</b></code>
+				</section>
+			</section>
+			<section>
+				<h3>Functions binding</h3>
+				<section data-markdown>
+					<script type="text/template">
 							Quite common case
 							```jsx
 							class TodoList extends React.Component { 
@@ -193,23 +200,64 @@
 										/>
 									})
 								}
-
-								render () { 
-									return <div>{this.renderTodos()}<div>;
-								} 
 							}
 							```
 						</script>
-					</section>
-					<section>
-						<h5>What's wrong?</h5>
-						<!-- TODO: describe the problem of re-rendering and recreating of functions on every render -->
-					</section>
 				</section>
 				<section>
-					<h3>Lists and Keys</h3>
-					<section data-markdown>
-						<script type="text/template">
+					<h5>Problem</h5>
+					<p class="fragment">
+						Handler function for <code>onClick</code> 
+						is recreated every render causing the re-render of
+						<code>&lt;Todo /&gt;</code>
+					</p>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+							##### Solution
+							```jsx
+							class Todo extends React.PureComponent {
+								// Bind only once per instance
+								handleClick = () => {
+									this.props.onClick(this.props.todo.id)
+								}
+
+								render () {
+									const { todo } = this.props
+									return <li onClick={this.handleClick}>{todo.title}</li>
+								}
+							}
+							```
+						</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+							##### Solution
+							```jsx
+							class TodoList extends React.Component { 
+								// Bind only once per instance				
+								handleTodoClick = (todoId) => {
+									this.props.onTodoCheck(todoId)
+								}
+
+								renderTodos () {
+									return this.props.todos.map((todo, i) => {
+										return <Todo 
+											key={todo.id} 
+											todo={todo} 
+											onClick={this.handleTodoClick}
+										/>
+									})
+								}
+							}
+							```
+						</script>
+				</section>
+			</section>
+			<section>
+				<h3>Lists and Keys</h3>
+				<section data-markdown>
+					<script type="text/template">
 							```jsx
 							class TodoList extends React.Component { 
 								renderTodos () {
@@ -225,9 +273,9 @@
 							}
 							```
 						</script>
-					</section>
-					<section data-markdown>
-						<script type="text/template">
+				</section>
+				<section data-markdown>
+					<script type="text/template">
 							```jsx
 							class TodoList extends React.Component { 
 								renderTodos () {
@@ -243,52 +291,169 @@
 							}
 							```
 						</script>
-					</section>
-					<section>
-						<p><code style="color:darkcyan">key</code> property rules:</p>
-						<ol>
-							<li>Should be stable</li>
-							<li>Should be unique among siblings</li>
-						</ol>
-						<p>Possible consequences is <a href="https://codepen.io/Windstalker/pen/dJGPKb">here</a></p>
-					</section>
-					<section>
-						<p><strong>But.. what if we don't have id's?</strong></p>
-						<ul>
-							<li class="fragment">Use unique id's generator libs (uuid-js, etc.)</li>
-							<li class="fragment">Use counters</li>
-							<li class="fragment">Use indices, ONLY IF array elements are static, 
-								and array will not be changed (filtering, sorting)</li>
-						</ul>
-					</section>
 				</section>
 				<section>
-					<h3>Long lists and data grids</h3>
-					<p>If you need to display huge amount of items (more than 500) in a list..</p>
-					<p class="fragment"><strong>virtualize them!</strong></p>
+					<p>
+						<code style="color:darkcyan">key</code> property rules:</p>
+					<ol>
+						<li>Should be stable</li>
+						<li>Should be unique among siblings</li>
+					</ol>
+					<p>Possible consequences is
+						<a href="https://codepen.io/Windstalker/pen/dJGPKb">here</a>
+					</p>
+				</section>
+				<section>
+					<p>
+						<strong>But.. what if we don't have id's?</strong>
+					</p>
 					<ul>
-						<li class="fragment"><code>react-virtualized</code></li>
-						<li class="fragment"><code>react-data-grid</code></li>
+						<li class="fragment">Use unique id's generator libs (uuid-js, etc.)</li>
+						<li class="fragment">Use counters</li>
+						<li class="fragment">Use indices, ONLY IF array elements are static, and array will not be changed (filtering, sorting)</li>
 					</ul>
 				</section>
-			</div>
+			</section>
+			<section>
+				<h3>Long lists and data grids</h3>
+				<p>If you need to display huge amount of items (more than 500) in a list..</p>
+				<p class="fragment">
+					<strong>virtualize them!</strong>
+				</p>
+				<ul>
+					<li class="fragment">
+						<code>react-virtualized</code>
+					</li>
+					<li class="fragment">
+						<code>react-data-grid</code>
+					</li>
+				</ul>
+			</section>
+			<section>
+				<h3>React + Redux</h3>
+				<section data-markdown>
+					<script type="text/template">
+						```js
+						import { connect } from 'react-redux'
+						import { toggleTodo } from '../actions'
+						import TodoList from '../components/TodoList'
+
+						const getVisibleTodos = (todos, filter) => {
+							switch (filter) {
+								case 'SHOW_ALL':
+									return todos
+								case 'SHOW_COMPLETED':
+									return todos.filter(t => t.completed)
+								case 'SHOW_ACTIVE':
+									return todos.filter(t => !t.completed)
+							}
+						}
+
+						const mapStateToProps = (state) => {
+							return {
+								todos: getVisibleTodos(
+									state.todos, 
+									state.visibilityFilter
+								)
+							}
+						}
+
+						const mapDispatchToProps = (dispatch) => {
+							return {
+								onTodoClick: (id) => {
+									dispatch(toggleTodo(id))
+								}
+							}
+						}
+
+						const VisibleTodoList = connect(
+							mapStateToProps,
+							mapDispatchToProps
+						)(TodoList)
+
+						export default VisibleTodoList
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						##### Problem
+
+						`mapStateToProps` will recalculate on every state tree change
+						and cause unnecessary rendering of connected component
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						##### Solution 
+
+						```js
+						import { connect } from 'react-redux'
+						import { toggleTodo } from '../actions'
+						import TodoList from '../components/TodoList'
+						
+						import { createSelector } from 'reselect'
+
+						const getVisibilityFilter = (state) => state.visibilityFilter
+						const getTodos = (state) => state.todos
+
+						// memoizing function
+						const visibleTodosSelector = createSelector(
+							[getTodos, getVisibilityFilter], 
+							(todos, filter) => {
+								switch (filter) {
+									case 'SHOW_ALL':
+										return todos
+									case 'SHOW_COMPLETED':
+										return todos.filter(t => t.completed)
+									case 'SHOW_ACTIVE':
+										return todos.filter(t => !t.completed)
+							}
+						}
+
+						const mapStateToProps = (state) => {
+							return {
+								todos: visibleTodosSelector(state)
+							}
+						}
+
+						const mapDispatchToProps = (dispatch) => {
+							return {
+								onTodoClick: (id) => {
+									dispatch(toggleTodo(id))
+								}
+							}
+						}
+
+						const VisibleTodoList = connect(
+							mapStateToProps,
+							mapDispatchToProps
+						)(TodoList)
+
+						export default VisibleTodoList
+						```
+					</script>
+				</section>
+			</section>
 		</div>
+	</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
 </html>
