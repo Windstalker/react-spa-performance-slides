@@ -9,9 +9,12 @@
 
 	<link rel="stylesheet" href="css/reveal.css">
 	<link rel="stylesheet" href="css/theme/sky.css">
-
+	 
 	<!-- Theme used for syntax highlighting of code -->
 	<link rel="stylesheet" href="lib/css/zenburn.css">
+	
+	<!-- Custom css for presentation -->
+	<link rel="stylesheet" href="css/custom.css">
 
 	<!-- Printing and PDF exports -->
 	<script>
@@ -379,7 +382,8 @@
 					<script type="text/template">
 						##### Problem
 
-						`mapStateToProps` will recalculate on every state tree change
+						Wrapping component in `connect()` means, that it subscribes to the state changes.
+						So, `mapStateToProps` will recalculate on every state tree change
 						and cause unnecessary rendering of connected component
 					</script>
 				</section>
@@ -435,6 +439,112 @@
 					</script>
 				</section>
 			</section>
+			<section>
+				<h3>When Redux does not perform well</h3>
+				<p>What if we need to render a lot of components, that would have frequent updates?</p>
+				<p>Frequent rerenders of connected components will spent a lot of time</p>
+			</section>
+			<section data-markdown>
+				<script type="text/template">
+					### React + Mobx
+
+					**Mobx** is a library for state management in a objected-oriented and reactive way  
+
+					```js
+					import { observable, autorun } from 'mobx'
+
+					const store = observable({
+						users: []
+					})
+					const disposer = autorun(() => {
+						console.log(users.join(', '))
+					})
+					store.users.push('John') // 'John'
+					store.users.push('Mike') // 'John, Mike'
+
+					disposer() // stop react on store.users changes
+					```
+				</script>
+			</section>
+			<section>
+				<h3>React + Mobx</h3>
+				<section data-markdown>
+					<script type="text/template">
+						Internal state management
+						
+						```jsx
+						import React from 'react'
+						import { observable, computed, action } from 'mobx'
+						import { observer } from 'mobx-react'
+
+						@observer
+						export default class SearchInput extends React.Component {
+							@observable searchString = ''
+							@action changeSearchString (str) {
+								this.searchString = str
+							}
+							handleChange = (evt) => {
+								this.changeSearchString(evt.target..value)
+							}
+							handleClearClick = () => {
+								this.changeSearchString('')
+							}
+							@computed get isValid () {
+								const invalidCharacters = /[^\w]/.test(this.searchString)
+								return this.searchString.length > 0 && !invalidCharacters
+							}
+							render() {
+								return <label for={this.props.id}>
+									<input 
+										id={this.props.id} 
+										className={this.isValid ? 'valid' : 'error'}
+										type="text" 
+										placeholder="Search..."
+										value={this.searchString}
+										onChange={this.handleChange}
+									/>
+									<button onClick={this.handleClearClick}>Clear</button>
+								</label>
+							}
+						}
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						Global state management
+						
+						```js
+						import React from 'react'
+						import { observable, action } from 'mobx'
+						import { Provider } from 'mobx-react'
+						import App from './App'
+
+						class Store {
+							@observable posts = [] 
+							@observable comments = []
+							@observable userInfo = {
+								name: 'John',
+								lastName: 'Doe'
+							}
+							@action addPost() {}
+							// ...
+						}
+						const store = new Store()
+
+						export class Root extends React.Component {
+							render () {
+								return <Provider store={store}>
+									<App />
+								</Provider>
+							}
+						}
+						export class App
+						```
+					</script>
+				</section>
+			</section>
+			</div>
 		</div>
 	</div>
 
