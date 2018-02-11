@@ -11,7 +11,8 @@
 	<link rel="stylesheet" href="css/theme/sky.css">
 	 
 	<!-- Theme used for syntax highlighting of code -->
-	<link rel="stylesheet" href="lib/css/zenburn.css">
+	<!-- <link rel="stylesheet" href="lib/css/zenburn.css"> -->
+	<link rel="stylesheet" href="lib/css/atom-one-dark.css">
 	
 	<!-- Custom css for presentation -->
 	<link rel="stylesheet" href="css/custom.css">
@@ -133,16 +134,16 @@
 			<section>
 				<section data-markdown>
 					<script type="text/template">
-						### Stateful vs Stateless
+						### Class Component vs Functional Component
 						```jsx
-						// Stateful
-						class StatefulGreeter extends React.Component { 
+						// Class component
+						class Greeter extends React.Component { 
 							render () { 
 								return <h1>Hello {this.props.name}</h1>; 
 							} 
 						}
 
-						// Stateless
+						// Functional (stateless) component
 						function StatelessGreeter (props) { 
 							return <h1>Hello {props.name}</h1>;
 						}
@@ -165,15 +166,14 @@
 					<script type="text/template">
 							### Pure Components
 							```jsx
-							// Stateful Pure Component
-							class StatefulPureGreeter extends React.Component { 
+							// Pure Component
+							class PureGreeter extends React.Component { 
 								shouldComponentUpdate () {
-									return false;
+									return false; // no future updates
 								}
 
 								render () { 
-									return <h1>Hello {this.props.name}, 
-										no updates for you</h1>; 
+									return <h1>Hello {this.props.name}</h1>; 
 								} 
 							}
 							```
@@ -187,25 +187,24 @@
 				<h3>Functions binding</h3>
 				<section data-markdown>
 					<script type="text/template">
-							Quite common case
-							```jsx
-							class TodoList extends React.Component { 
-								handleTodoClick (todoId) {
-									this.props.onTodoCheck(todoId)
-								}
-
-								renderTodos () {
-									return this.props.todos.map((todo, i) => {
-										return <Todo 
-											key={todo.id} 
-											todo={todo} 
-											onClick={() => this.handleTodoClick(todo.id)}
-										/>
-									})
-								}
+						```jsx
+						class TodoList extends React.Component { 
+							handleTodoClick (todoId) {
+								this.props.onTodoCheck(todoId)
 							}
-							```
-						</script>
+
+							renderTodos () {
+								return this.props.todos.map((todo, i) => {
+									return <Todo 
+										key={todo.id} 
+										todo={todo} 
+										onClick={() => this.handleTodoClick(todo.id)}
+									/>
+								})
+							}
+						}
+						```
+					</script>
 				</section>
 				<section>
 					<h5>Problem</h5>
@@ -352,29 +351,20 @@
 							}
 						}
 
-						const mapStateToProps = (state) => {
-							return {
-								todos: getVisibleTodos(
-									state.todos, 
-									state.visibilityFilter
-								)
+						const mapStateToProps = (state) => ({
+							todos: getVisibleTodos(
+								state.todos, 
+								state.visibilityFilter
+							)
+						})
+
+						const mapDispatchToProps = (dispatch) => ({
+							onTodoClick: (id) => {
+								dispatch(toggleTodo(id))
 							}
-						}
+						})
 
-						const mapDispatchToProps = (dispatch) => {
-							return {
-								onTodoClick: (id) => {
-									dispatch(toggleTodo(id))
-								}
-							}
-						}
-
-						const VisibleTodoList = connect(
-							mapStateToProps,
-							mapDispatchToProps
-						)(TodoList)
-
-						export default VisibleTodoList
+						export default connect(mapStateToProps,	mapDispatchToProps)(TodoList)
 						```
 					</script>
 				</section>
@@ -415,26 +405,17 @@
 							}
 						}
 
-						const mapStateToProps = (state) => {
-							return {
-								todos: visibleTodosSelector(state)
+						const mapStateToProps = (state) => ({
+							todos: visibleTodosSelector(state)
+						})
+
+						const mapDispatchToProps = (dispatch) => ({
+							onTodoClick: (id) => {
+								dispatch(toggleTodo(id))
 							}
-						}
+						})
 
-						const mapDispatchToProps = (dispatch) => {
-							return {
-								onTodoClick: (id) => {
-									dispatch(toggleTodo(id))
-								}
-							}
-						}
-
-						const VisibleTodoList = connect(
-							mapStateToProps,
-							mapDispatchToProps
-						)(TodoList)
-
-						export default VisibleTodoList
+						export default connect(mapStateToProps,	mapDispatchToProps)(TodoList)
 						```
 					</script>
 				</section>
@@ -442,7 +423,7 @@
 			<section>
 				<h3>When Redux does not perform well</h3>
 				<p>What if we need to render a lot of components, that would have frequent updates?</p>
-				<p>Frequent rerenders of connected components will spent a lot of time</p>
+				<p>Frequent re-renders of connected components will take a lot of time</p>
 			</section>
 			<section data-markdown>
 				<script type="text/template">
@@ -457,12 +438,13 @@
 						users: []
 					})
 					const disposer = autorun(() => {
-						console.log(users.join(', '))
-					})
+						console.log(store.users.join(', '))
+					}) // ''
+
 					store.users.push('John') // 'John'
 					store.users.push('Mike') // 'John, Mike'
 
-					disposer() // stop react on store.users changes
+					disposer() // stop react on store.users changes 
 					```
 				</script>
 			</section>
@@ -470,7 +452,7 @@
 				<h3>React + Mobx</h3>
 				<section data-markdown>
 					<script type="text/template">
-						Internal state management
+						#### Internal state management
 						
 						```jsx
 						import React from 'react'
@@ -480,18 +462,15 @@
 						@observer
 						export default class SearchInput extends React.Component {
 							@observable searchString = ''
-							@action changeSearchString (str) {
-								this.searchString = str
+							@action.bound changeSearchString (e) {
+								this.searchString = e.target.value
 							}
-							handleChange = (evt) => {
-								this.changeSearchString(evt.target..value)
-							}
-							handleClearClick = () => {
-								this.changeSearchString('')
+							@action.bound clearSearchString () {
+								this.searchString = ''
 							}
 							@computed get isValid () {
-								const invalidCharacters = /[^\w]/.test(this.searchString)
-								return this.searchString.length > 0 && !invalidCharacters
+								const hasInvalidChars = /[^\w]/.test(this.searchString)
+								return this.searchString.length > 0 && !hasInvalidChars
 							}
 							render() {
 								return <label for={this.props.id}>
@@ -501,9 +480,9 @@
 										type="text" 
 										placeholder="Search..."
 										value={this.searchString}
-										onChange={this.handleChange}
+										onChange={this.changeSearchString}
 									/>
-									<button onClick={this.handleClearClick}>Clear</button>
+									<button onClick={this.clearSearchString}>Clear</button>
 								</label>
 							}
 						}
@@ -512,7 +491,7 @@
 				</section>
 				<section data-markdown>
 					<script type="text/template">
-						Global state management
+						#### Global state management - Provider
 						
 						```js
 						import React from 'react'
@@ -532,17 +511,48 @@
 						}
 						const store = new Store()
 
-						export class Root extends React.Component {
+						export default class Root extends React.Component {
 							render () {
 								return <Provider store={store}>
 									<App />
 								</Provider>
 							}
 						}
-						export class App
 						```
 					</script>
 				</section>
+				<section data-markdown>
+					<script type="text/template">
+						#### Global state management - Injected Component
+						
+						```js
+						import React from 'react'
+						import { inject, observer } from 'mobx-react'
+						
+						@inject('store')
+						@observer
+						export default class Comment extends React.Component {
+							render () {
+								const { idx, store } = this.props
+								const comment = store.comments[idx]
+
+								return <div>
+									<h4>{comment.author} says:</h4>
+									<blockquote>{comment.text}</blockquote>
+								</div>
+							}
+						}
+						```
+					</script>
+				</section>
+			</section>
+			<section>
+				<h3>Redux vs Mobx</h3>
+				<q class="small">An artificial example where MobX really shines and Redux is not really suited for it</q>
+				<p class="small"><cite>https://goo.gl/rMe3BP</cite></p>
+				<a href="https://dtinth.github.io/pixelpaint/">
+					<img alt="Pixel App" height="450" src="./assets/pixel-app.png"/>
+				</a>
 			</section>
 			</div>
 		</div>
@@ -560,7 +570,17 @@
 				{ src: 'plugin/markdown/marked.js' },
 				{ src: 'plugin/markdown/markdown.js' },
 				{ src: 'plugin/notes/notes.js', async: true },
-				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+				{ 
+					src: 'plugin/highlight/highlight.js', 
+					async: true, 
+					callback: function () { 
+						hljs.configure({
+							tabReplace: '\s\s',
+							languages: ['jsx']
+						});
+						hljs.initHighlightingOnLoad(); 
+					} 
+				}
 			]
 		});
 	</script>

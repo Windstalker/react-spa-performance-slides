@@ -1,4 +1,11 @@
+.reveal p.small,
+.reveal q.small {
+  font-size: 0.6em;
+  line-height: 1.2em;
+  margin: 0 0 0.1em;
+}
+
 .reveal pre {
   font-size: 0.4em;
-  line-height: 1.1em;
+  line-height: 1.2em;
 }
