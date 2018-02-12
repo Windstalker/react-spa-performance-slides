@@ -208,7 +208,7 @@
 				</section>
 				<section>
 					<h5>Problem</h5>
-					<p class="fragment">
+					<p>
 						Handler function for <code>onClick</code> 
 						is recreated every render causing the re-render of
 						<code>&lt;Todo /&gt;</code>
@@ -318,18 +318,62 @@
 			</section>
 			<section>
 				<h3>Long lists and data grids</h3>
-				<p>If you need to display huge amount of items (more than 500) in a list..</p>
-				<p class="fragment">
-					<strong>virtualize them!</strong>
-				</p>
-				<ul>
-					<li class="fragment">
-						<code>react-virtualized</code>
-					</li>
-					<li class="fragment">
-						<code>react-data-grid</code>
-					</li>
-				</ul>
+				<section>
+					<p>If you need to display huge amount of items (more than 500) in a list..</p>
+					<p class="fragment">
+						<strong>virtualize them!</strong>
+					</p>
+					<ul>
+						<li class="fragment">
+							<code>react-virtualized</code>
+						</li>
+						<li class="fragment">
+							<code>react-data-grid</code>
+						</li>
+					</ul>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						```js
+						import React from 'react'
+						import { List } from 'react-virtualized'
+						import Todo from './Todo'
+
+						class VeryLongTodoList extends React.Component {
+							rowGetter(i) {
+								return this.props.todos[i]
+							}
+
+							rowRenderer = ({index, key, style}) => {
+								const todo = this.rowGetter(index)
+								
+								return <div style={style} key={key}>
+									<Todo todo={todo} onClick={this.handleTodoClick}/>
+								</div>
+							}
+
+							noRowsRenderer = () => {
+								return <p>No todos</p>
+							}
+
+							render {
+								return <List
+									ref="List"
+									className={styles.List}
+									height={this.props.listHeight}
+									width={WIDTH}
+									overscanRowCount={OVERSCAN_ROWS}
+									noRowsRenderer={this.noRowsRenderer}
+									rowCount={this.props.todos.length}
+									rowHeight={ROW_HEIGHT}
+									rowRenderer={this.rowRenderer}
+									scrollToIndex={this.props.scrollToIndex}
+								/>
+							}
+						}
+						```
+					</script>	
+				</section>
 			</section>
 			<section>
 				<h3>React + Redux</h3>
@@ -548,13 +592,25 @@
 			</section>
 			<section>
 				<h3>Redux vs Mobx</h3>
-				<q class="small">An artificial example where MobX really shines and Redux is not really suited for it</q>
-				<p class="small"><cite>https://goo.gl/rMe3BP</cite></p>
+				<q>An artificial example where MobX really shines and Redux is not really suited for it</q>
+				<p><cite><a href="https://goo.gl/rMe3BP">https://goo.gl/rMe3BP</a></cite></p>
 				<a href="https://dtinth.github.io/pixelpaint/">
 					<img alt="Pixel App" height="450" src="./assets/pixel-app.png"/>
 				</a>
 			</section>
-			</div>
+			<section>
+				<h2>What about React 16 aka Fiber?</h2>
+				<p>It's a total rewrite of core algorythm, based on implementation of interruptible stack</p>
+				<ul>
+					<li class="fragment">Work on reconciliation/updates are broken into small chunks (~16ms)</li>
+					<li class="fragment">Prioritizing and scheduling updates, reusing nodes from old tree</li>
+					<li class="fragment">Limit the error boundaries</li>
+				</ul>
+			</section>
+			<section>
+				<h2>Questions?</h2>
+				<img class="no-frame" alt="Proud Coyote" height="450" src="./assets/coyote-proud.png" />
+			</section>
 		</div>
 	</div>
 

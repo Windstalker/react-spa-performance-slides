@@ -1,11 +1,18 @@
-.reveal p.small,
-.reveal q.small {
-  font-size: 0.6em;
-  line-height: 1.2em;
-  margin: 0 0 0.1em;
+.reveal {
+  font-size: 32px;
+}
+
+.reveal p,
+.reveal q {
+  margin: 0 0 0.2em;
 }
 
 .reveal pre {
-  font-size: 0.4em;
   line-height: 1.2em;
+}
+
+img.no-frame {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
 }
