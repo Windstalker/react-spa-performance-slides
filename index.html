@@ -42,17 +42,20 @@
 					<section>
 						<h4>Expectations</h4>
 						<img height="200" data-src="./assets/road_runner.jpg" alt="Road Runner">
+						<aside class="notes">
+							Устоявшимся стереотипом о React.js является то, что он дает быструю отрисовку “из коробки”. Поэтому, чаще всего мы ожидаем
+							от приложений написанных на React вот такой быстроты. Слепо взяв это на веру мы начинаем писать приложение как душе угодно,
+							и в результате все оказывается не так радужно.
+						</aside>
 					</section>
 					<section>
 						<h4>Reality</h4>
 						<img width="400" data-src="./assets/coyote.jpg" alt="Coyote">
+						<aside class="notes">
+							Наши ожидания не оправдываются, приложение тормозит,
+							память переполняется, отрисовка происходит долго. Кто виноват: React или то, как мы написали свое приложение?
+						</aside>
 					</section>
-					<aside class="notes">
-						Устоявшимся стереотипом о React.js является то, что он дает быструю отрисовку “из коробки”. Поэтому, чаще всего
-						мы ожидаем от приложений написанных на React вот такой быстроты. Слепо взяв это на веру мы начинаем писать приложение как душе угодно, и
-						в результате все оказывается не так радужно. Наши ожидания не оправдываются, приложение тормозит,
-						память переполняется, отрисовка происходит долго. Кто виноват: React или то, как мы написали свое приложение?
-					</aside>
 				</section>
 				<section>
 					<h3>How React does make render?</h3>
@@ -99,31 +102,10 @@
 						в Chrome Dev Tools при записи Performance Timeline.
 						Для React 15 есть флаг react_perf который можно добавить как query параметр	к строке адреса dev сервера и посмотреть тайминги
 						отрисовок и обновлений при записи Performance Timeline.
+						4. Также для замеров производительности можно использовать Performance API, экспериментальная фича доступная 
+						пока только в Chrome от 60-й версии
 					</aside>
 				</section>
-			</section>
-			<section>
-				<h3>How React does make render?</h3>
-				<img data-src="./assets/react-render-to-dom.gif" alt="Steps of render process">
-			</section>
-			<section>
-				<blockquote cite="https://twitter.com/dan_abramov/status/790333373864669185">
-					&ldquo;Oh, and no, React is not faster than DOM. Sorry. But it lets you build large performant apps without thinking too
-					much about performance.&rdquo;
-					<p>Dan Abramov</p>
-				</blockquote>
-			</section>
-			<section>
-				<h3>How to measure performance of React app?</h3>
-				<ul>
-					<li class="fragment">Chrome Dev Tools</li>
-					<li class="fragment">React Dev Tools</li>
-					<li class="fragment">
-						<code>react-addons-perf</code> +
-						<code>?react_perf</code>
-					</li>
-					<li class="fragment">Performance API</li>
-				</ul>
 			</section>
 			<section data-markdown>
 				<script type="text/template">
@@ -207,6 +189,14 @@
 						}
 						```
 						</script>
+						<aside class="notes">
+							Есть несколько способов обьявления компонента в React: Component Class и Functional. 
+							Один представляет собой класс унаследованный от React.Component, другой - чистую функцию. 
+							Наверняка, вы использовали оба способа. Как по вашему, какой из этих компонентом
+							будет быстрее в отрисовке? На самом деле, разницы в скорости не будет. Почему? Потому, что по факту 
+							Functional компонент оборачивается в класс React.Component! И является попросту его методом render! 
+							Это один из мифов в которые по незнанию верят начинающие React разработчики.
+						</aside>
 				</section>
 				<section>
 					<blockquote cite="https://twitter.com/dan_abramov/status/755343749983657986">
@@ -217,6 +207,9 @@
 						<b>class</b> internally. It's same code path.&rdquo;
 						<p>Dan Abramov</p>
 					</blockquote>
+						<aside class="notes">
+							И снова цитата Абрамова на этот счет
+						</aside>
 				</section>
 			</section>
 			<section>
@@ -236,9 +229,26 @@
 							}
 							```
 						</script>
+						<aside class="notes">
+							Оптимизации в компоненте могут быть достигнуты путем использования lifecycle методов,
+							таких как shouldComponentcolorUpdate. Например, возвращая из этого коллбэка false 
+							мы гарантируем, что дальнейшая перерисовка (обновление) компонента не произойдет.
+							В нем можно имплементировать логику поверхностного (неглубокого) сравнения новых 
+							и текущих props, чтобы уменьшить количество перерисовок при передаче в качестве 
+							одного из props объекта или массива. Можно будет сравнить изменилась ли ссылка на этот
+							обьект, и вернуть true если это так. Таким образом, изменения содержимого обьекта (полей или элементов массива) 
+							будут проигнорированы.
+						</aside>
 				</section>
 				<section>
 					<code><b>React.Component</b> + shallow equal => <b style="color:red;">React.PureComponent</b></code>
+					<aside class="notes">
+						Оптимизированной версией React.Component с примененной логикой shallow compare является React.PureComponent.
+						Но стоит быть	осторожным, если компонент содержит в props дочерние элементы children, 
+						их изменения могут быть проигнорированы в процессе shallow comparison. Поэтому лучше всего использовать
+						PureComponent в конечных узлов дерева DOM, то есть компонентов, которые просто выполняют функцию отображения,
+						исходя из props, но при этом не имеют state.
+					</aside>
 				</section>
 			</section>
 			<section>
@@ -263,6 +273,12 @@
 						}
 						```
 					</script>
+					<aside class="notes">
+						Одна из плохих практик: это привязка контекста выполнения к обработчику непосредственно в render().
+						Это и создание стрелочной функции	и вызов функции bind у функции-обработчика. Если компонент перерисовывается -
+						то на каждый render будет создаваться новая функция, заставляя компонент, которому она передана как prop 
+						перерисоваться, хотя остальные его prop и не поменялись.
+					</aside>
 				</section>
 				<section>
 					<h5>Problem</h5>
@@ -289,6 +305,11 @@
 							}
 							```
 						</script>
+						<aside class="notes">
+							Путь решения прост: делать привязку контекста в конструкторе класса или же 
+							использовать экспериментальный синтаксис, где	стрелочная функция записывается как свойство прототипа. 
+							Таким образом функция будет создаваться единожды при создании компонента.
+						</aside>
 				</section>
 				<section data-markdown>
 					<script type="text/template">
