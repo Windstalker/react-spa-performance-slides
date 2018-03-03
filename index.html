@@ -307,8 +307,9 @@
 						</script>
 						<aside class="notes">
 							Путь решения прост: делать привязку контекста в конструкторе класса или же 
-							использовать экспериментальный синтаксис, где	стрелочная функция записывается как свойство прототипа. 
-							Таким образом функция будет создаваться единожды при создании компонента.
+							использовать экспериментальный синтаксис, где	стрелочная функция определяется на уровне прототипа. 
+							Таким образом функция будет создаваться единожды при создании компонента и не вызывать перерисовки 
+							компонента, которому она передается.
 						</aside>
 				</section>
 				<section data-markdown>
@@ -343,7 +344,7 @@
 							class TodoList extends React.Component { 
 								renderTodos () {
 									return this.props.todos.map((todo, i) => {
-										// Bad one, avoid this
+										// Naive way
 										return <Todo key={i} todo={todo} />
 									})
 								}
@@ -354,6 +355,17 @@
 							}
 							```
 						</script>
+						<aside class="notes">
+							Перейдем к спискам. Как мы обычно описываем в коде список одинаковых элементов в компоненте? 
+							Берем prop или переменную содержащую массив с данными и вызываем map с функцией 
+							отрисовки React-элемента для каждого элемента массива. Но запустив этот код как есть, 
+							мы получим предупреждение от React.js о том, что отсутствует prop "key". 
+							Зачем нужен этот магический key, который нас настоятельно просят добавить?
+							Этот ключ помогает React при сверке двух состояний VDOM-дерева определить,
+							какой именно из компонентов в списке изменился, добавился или удалился после перерисовки.
+							Чаще всего мы привыкли использовать в качестве ключа индекс элемента в массиве,
+							но это наивный путь и позже я покажу к чему это может привести.
+						</aside>
 				</section>
 				<section data-markdown>
 					<script type="text/template">
@@ -372,6 +384,12 @@
 							}
 							```
 						</script>
+						<aside class="notes">
+							Как правило, ключ должен иметь постоянное (стабильное) значение. 
+							Самым лучшим вариантом для ключа будет являться свойство id элемента из коллекции.
+							Например, если мы получили с сервера список todo, ключом может служить id одной todo-шки 
+							и это самый лучший вариант для ключа.
+						</aside>
 				</section>
 				<section>
 					<p>
@@ -383,6 +401,9 @@
 					<p>Possible consequences is
 						<a href="https://codepen.io/Windstalker/pen/dJGPKb">here</a>
 					</p>
+					<aside class="notes">
+						Здесь можно увидеть наглядный пример того, почему индекс нельзя использовать в качестве ключа.
+					</aside>
 				</section>
 				<section>
 					<p>
@@ -393,6 +414,16 @@
 						<li class="fragment">Use counters</li>
 						<li class="fragment">Use indices, ONLY IF array elements are static, and array will not be changed (filtering, sorting)</li>
 					</ul>
+					<aside class="notes">
+						Что делать если идентификаторов нет?
+						Первый выход - использовать библиотеки генерации случайных id, второй - использовать счетчики для дочерних элементов
+						В крайнем случае можно использовать и индекс, но это допустимо ТОЛЬКО ЕСЛИ:
+						<ul>
+							<li>У элементов массива не имеется уникальных идентификаторов</li>
+							<li>Массив и его элементы статичны (неизменны)</li>
+							<li>Массив никогда не будет фильтроваться или сортироваться</li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section>
@@ -410,6 +441,17 @@
 							<code>react-data-grid</code>
 						</li>
 					</ul>
+					<aside class="notes">
+						Чем больше элементов находится в DOM - тем больше памяти они потребляют. То же самое и с VDOM.
+						Заметные подтормаживания интерфейса будут наблюдаться при отрисовке порядка 500 элементов и более.
+						Для оптимизации длинных списков, применяется прием виртуализации: хранение в DOM только тех элементов, 
+						которые видны на экране или viewport'е.
+						Существует множество библиотек виртуализации для React, но одной из самых известных и зарекомендовавших себя
+						является react-virtualized. Она позволяет отрисовывать горизонтальные, вертикальные списки и таблицы 
+						с огромным количеством строк и столбцов, произвольной длины и ширины.
+						Другой библиотекой, на этот раз, более специализированной, является react-data-grid. 
+						Представляет полнофункциональный grid с виртуализацией, и с широкими возможностями кастомизации.
+					</aside>
 				</section>
 				<section data-markdown>
 					<script type="text/template">
@@ -452,6 +494,9 @@
 						}
 						```
 					</script>	
+					<aside class="notes">
+						Здесь представлен пример использования react-virtualized
+					</aside>
 				</section>
 			</section>
 			<section>
@@ -490,6 +535,12 @@
 						export default connect(mapStateToProps,	mapDispatchToProps)(TodoList)
 						```
 					</script>
+					<aside class="notes">
+						Теперь поговорим о проблемах производительности характерных для приложений написанных с Redux.
+						Redux предоставляет один store для приложения, компоненты могут получить данные из store и подписаться на изменения 
+						при помощи декоратора connect, и функций маппинга store на props компонента и маппинга action'ов.
+						В чем может крыться проблема?
+					</aside>
 				</section>
 				<section data-markdown>
 					<script type="text/template">
@@ -497,8 +548,14 @@
 
 						Wrapping component in `connect()` means, that it subscribes to the state changes.
 						So, `mapStateToProps` will recalculate on every state tree change
-						and cause unnecessary rendering of connected component
+						and would cause unnecessary rendering of connected component
 					</script>
+					<aside class="notes">
+						В том, что при каждом изменении store, функция mapStateToProps может вернуть абсолютно 
+						новые значения для props компонента, вызывая ненужную перерисовку.
+						В примере todos будет каждый раз новым массивом при каждом изменении store 
+						(даже если изменилась совсем не связанная часть).
+					</aside>
 				</section>
 				<section data-markdown>
 					<script type="text/template">
@@ -541,12 +598,22 @@
 						export default connect(mapStateToProps,	mapDispatchToProps)(TodoList)
 						```
 					</script>
+					<aside class="notes">
+						Проблема может быть решена при помощи reselect - библиотеки, позволяющей создать мемоизирующие селекторы для
+						данных store. Они не будут пересчитываться, если изменилась часть стора за которой они не следят,
+						также если не изменились аргументы функции-селектора. Это позволит уменьшить количество перерисовок.
+					</aside>
 				</section>
 			</section>
 			<section>
 				<h3>When Redux does not perform well</h3>
 				<p>What if we need to render a lot of components, that would have frequent updates?</p>
 				<p>Frequent re-renders of connected components will take a lot of time</p>
+				<aside class="notes">
+					Но есть та ниша, в которой Redux показывает себя заведомо плохо. Это очень частые и мелкие изменения store.
+					Частые изменения будут часто вызывать перерисовки connected-компонентов, что скажется на отзывчивости UI.
+					И здесь на помощь приходит..
+				</aside>
 			</section>
 			<section data-markdown>
 				<script type="text/template">
@@ -570,6 +637,11 @@
 					disposer() // stop react on store.users changes 
 					```
 				</script>
+				<aside class="notes">
+					Mobx - это библиотека для управления состоянием приложения, на основе реактивного и обьектно-ориентированного подхода,
+					в отличие от функционального Redux. Состояние в mobx описывается observable величинами, за которыми можно наблюдать и 
+					реагировать на изменения.
+				</aside>
 			</section>
 			<section>
 				<h3>React + Mobx</h3>
