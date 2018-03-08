@@ -59,18 +59,31 @@
 				</section>
 				<section>
 					<h3>How React does make render?</h3>
-					<img data-src="./assets/react-render-to-dom.gif" alt="Steps of render process">
-					<aside class="notes">
-						Начнем рассмотрение с того, как работает React.js.
-						Известно, что строительным элементом в React является компонент, который имеет свой жизненный цикл: создание, изначальная отрисовка,
-						обновление и последующая отрисовка, и отсоединение, когда компонент больше не нужен в DOM.
-						Отрисовка каждого из компонентов происходит в так называемом дереве Virtual DOM, состояние которого является
-						“отражением” реального DOM документа. Это состояние хранится в памяти, пока работает ваше приложение.
-						Обновления вызывают перерисовки и между отрисовками происходит сравнение состояний дерева Virtual DOM, и вычисленная разница
-						затем уже применяется к DOM реальному, изменяя только то, что необходимо. Этот алгоритм называется Reconciliation.
-						Надо заметить, что операция сверки рекурсивно проходит по всему виртуальному древу и это 
-						происходит <strong>синхронно</strong>, то есть является блокирующей операцией для основного потока.
-					</aside>
+					<section>
+						<img data-src="./assets/react-render-to-dom.gif" alt="Steps of render process">
+						<aside class="notes">
+							Начнем рассмотрение с того, как работает React.js.
+							Известно, что строительным элементом в React является компонент, который имеет свой жизненный цикл: создание, изначальная отрисовка,
+							обновление и последующая отрисовка, и отсоединение, когда компонент больше не нужен в DOM.
+							Отрисовка каждого из компонентов происходит в так называемом дереве Virtual DOM, состояние которого является
+							“отражением” реального DOM документа. Это состояние хранится в памяти, пока работает ваше приложение.
+							Обновления вызывают перерисовки и между отрисовками происходит сравнение состояний дерева Virtual DOM, и вычисленная разница
+							затем уже применяется к DOM реальному, изменяя только то, что необходимо. Этот алгоритм называется Reconciliation.
+						</aside>
+					</section>
+					<section>
+						<img data-src="./assets/reconciliation.png" alt="Reconciliation">		
+						<aside class="notes">
+							Немного подробнее о Reconciliation. Он является частью процесса render, сравнивая новое дерево компонентов с предыдущим.
+							На стадии обновления, когда, например, у компонента изменилось состояние, происходит проверка, а должен ли обновиться этот компонент.
+							В случае если это так shouldComponentUpdate вернет true, и будет выполнен сначала componentWillUpdate, затем render и componentDidUpdate.
+							После render произойдет проверка, а совпадает ли дерево компонента с предыдущим его состоянием? Если нет, то последовательно у 
+							произойдут либо unmount дочерних компонентов, либо mount новых компонентов, либо будет произведен тот же алгоритм при обновлении -
+							shouldComponentUpdate, затем перерисовка.
+							Надо заметить, что операция Reconciliation рекурсивно проходит по всему виртуальному дереву и это происходит
+							<strong>синхронно</strong>, то есть является блокирующей операцией для основного потока.
+						</aside>				
+					</section>
 				</section>
 				<section>
 					<blockquote cite="https://twitter.com/dan_abramov/status/790333373864669185">
@@ -214,7 +227,7 @@
 			</section>
 			<section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 							### Pure Components
 							```jsx
 							// Pure Component
@@ -228,17 +241,19 @@
 								} 
 							}
 							```
-						</script>
-						<aside class="notes">
+
+							Note:
+
 							Оптимизации в компоненте могут быть достигнуты путем использования lifecycle методов,
-							таких как shouldComponentcolorUpdate. Например, возвращая из этого коллбэка false 
+							таких как shouldComponentUpdate. Например, возвращая из этого коллбэка false 
 							мы гарантируем, что дальнейшая перерисовка (обновление) компонента не произойдет.
 							В нем можно имплементировать логику поверхностного (неглубокого) сравнения новых 
 							и текущих props, чтобы уменьшить количество перерисовок при передаче в качестве 
 							одного из props объекта или массива. Можно будет сравнить изменилась ли ссылка на этот
 							обьект, и вернуть true если это так. Таким образом, изменения содержимого обьекта (полей или элементов массива) 
 							будут проигнорированы.
-						</aside>
+
+						</script>
 				</section>
 				<section>
 					<code><b>React.Component</b> + shallow equal => <b style="color:red;">React.PureComponent</b></code>
@@ -254,7 +269,7 @@
 			<section>
 				<h3>Functions binding</h3>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						```jsx
 						class TodoList extends React.Component { 
 							handleTodoClick (todoId) {
@@ -270,15 +285,16 @@
 									/>
 								})
 							}
-						}
+						}						
 						```
-					</script>
-					<aside class="notes">
+					
+						Note:
+
 						Одна из плохих практик: это привязка контекста выполнения к обработчику непосредственно в render().
 						Это и создание стрелочной функции	и вызов функции bind у функции-обработчика. Если компонент перерисовывается -
 						то на каждый render будет создаваться новая функция, заставляя компонент, которому она передана как prop 
 						перерисоваться, хотя остальные его prop и не поменялись.
-					</aside>
+					</script>
 				</section>
 				<section>
 					<h5>Problem</h5>
@@ -289,7 +305,7 @@
 					</p>
 				</section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 							##### Solution
 							```jsx
 							class Todo extends React.PureComponent {
@@ -304,13 +320,13 @@
 								}
 							}
 							```
-						</script>
-						<aside class="notes">
+							Note:
+
 							Путь решения прост: делать привязку контекста в конструкторе класса или же 
 							использовать экспериментальный синтаксис, где	стрелочная функция определяется на уровне прототипа. 
 							Таким образом функция будет создаваться единожды при создании компонента и не вызывать перерисовки 
 							компонента, которому она передается.
-						</aside>
+						</script>
 				</section>
 				<section data-markdown>
 					<script type="text/template">
@@ -339,7 +355,7 @@
 			<section>
 				<h3>Lists and Keys</h3>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 							```jsx
 							class TodoList extends React.Component { 
 								renderTodos () {
@@ -352,10 +368,11 @@
 								render () { 
 									return <div>{this.renderTodos()}<div>;
 								} 
-							}
+							}							
 							```
-						</script>
-						<aside class="notes">
+							
+							Note:
+
 							Перейдем к спискам. Как мы обычно описываем в коде список одинаковых элементов в компоненте? 
 							Берем prop или переменную содержащую массив с данными и вызываем map с функцией 
 							отрисовки React-элемента для каждого элемента массива. Но запустив этот код как есть, 
@@ -365,10 +382,10 @@
 							какой именно из компонентов в списке изменился, добавился или удалился после перерисовки.
 							Чаще всего мы привыкли использовать в качестве ключа индекс элемента в массиве,
 							но это наивный путь и позже я покажу к чему это может привести.
-						</aside>
+						</script>
 				</section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 							```jsx
 							class TodoList extends React.Component { 
 								renderTodos () {
@@ -383,13 +400,14 @@
 								} 
 							}
 							```
-						</script>
-						<aside class="notes">
+							
+							Note:
+
 							Как правило, ключ должен иметь постоянное (стабильное) значение. 
 							Самым лучшим вариантом для ключа будет являться свойство id элемента из коллекции.
 							Например, если мы получили с сервера список todo, ключом может служить id одной todo-шки 
 							и это самый лучший вариант для ключа.
-						</aside>
+						</script>
 				</section>
 				<section>
 					<p>
@@ -454,7 +472,7 @@
 					</aside>
 				</section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						```js
 						import React from 'react'
 						import { List } from 'react-virtualized'
@@ -491,18 +509,18 @@
 									scrollToIndex={this.props.scrollToIndex}
 								/>
 							}
-						}
+						}						
 						```
-					</script>	
-					<aside class="notes">
+						Note:
+
 						Здесь представлен пример использования react-virtualized
-					</aside>
+					</script>	
 				</section>
 			</section>
 			<section>
 				<h3>React + Redux</h3>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						```js
 						import { connect } from 'react-redux'
 						import { toggleTodo } from '../actions'
@@ -520,45 +538,45 @@
 						}
 
 						const mapStateToProps = (state) => ({
-							todos: getVisibleTodos(
-								state.todos, 
-								state.visibilityFilter
-							)
+							todos: getVisibleTodos(state.todos, state.visibilityFilter)
 						})
 
 						const mapDispatchToProps = (dispatch) => ({
-							onTodoClick: (id) => {
-								dispatch(toggleTodo(id))
-							}
+							onTodoClick: (id) => dispatch(toggleTodo(id))
 						})
 
-						export default connect(mapStateToProps,	mapDispatchToProps)(TodoList)
+						export default connect(
+							mapStateToProps,
+							mapDispatchToProps
+						)(TodoList)
+
 						```
-					</script>
-					<aside class="notes">
+						Note:
+
 						Теперь поговорим о проблемах производительности характерных для приложений написанных с Redux.
 						Redux предоставляет один store для приложения, компоненты могут получить данные из store и подписаться на изменения 
 						при помощи декоратора connect, и функций маппинга store на props компонента и маппинга action'ов.
 						В чем может крыться проблема?
-					</aside>
+					</script>
 				</section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						##### Problem
 
 						Wrapping component in `connect()` means, that it subscribes to the state changes.
 						So, `mapStateToProps` will recalculate on every state tree change
 						and would cause unnecessary rendering of connected component
-					</script>
-					<aside class="notes">
+
+						Note:
+
 						В том, что при каждом изменении store, функция mapStateToProps может вернуть абсолютно 
 						новые значения для props компонента, вызывая ненужную перерисовку.
 						В примере todos будет каждый раз новым массивом при каждом изменении store 
 						(даже если изменилась совсем не связанная часть).
-					</aside>
+					</script>
 				</section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						##### Solution 
 
 						```js
@@ -590,18 +608,22 @@
 						})
 
 						const mapDispatchToProps = (dispatch) => ({
-							onTodoClick: (id) => {
-								dispatch(toggleTodo(id))
-							}
+							onTodoClick: (id) => dispatch(toggleTodo(id))
 						})
 
-						export default connect(mapStateToProps,	mapDispatchToProps)(TodoList)
+						export default connect(  
+							mapStateToProps,  
+							mapDispatchToProps  
+						)(TodoList)
 						```
-					</script>
-					<aside class="notes">
+						
+						Note:
+
 						Проблема может быть решена при помощи reselect - библиотеки, позволяющей создать мемоизирующие селекторы для
 						данных store. Они не будут пересчитываться, если изменилась часть стора за которой они не следят,
 						также если не изменились аргументы функции-селектора. Это позволит уменьшить количество перерисовок.
+					</script>
+					<aside class="notes">
 					</aside>
 				</section>
 			</section>
@@ -616,7 +638,7 @@
 				</aside>
 			</section>
 			<section data-markdown>
-				<script type="text/template">
+				<script type="text/template" data-notes="^Note:">
 					### React + Mobx
 
 					**Mobx** is a library for state management in a objected-oriented and reactive way  
@@ -636,17 +658,20 @@
 
 					disposer() // stop react on store.users changes 
 					```
-				</script>
-				<aside class="notes">
+
+					Note:
+
 					Mobx - это библиотека для управления состоянием приложения, на основе реактивного и обьектно-ориентированного подхода,
 					в отличие от функционального Redux. Состояние в mobx описывается observable величинами, за которыми можно наблюдать и 
 					реагировать на изменения.
+				</script>
+				<aside class="notes">
 				</aside>
 			</section>
 			<section>
 				<h3>React + Mobx</h3>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						#### Internal state management
 						
 						```jsx
@@ -682,10 +707,14 @@
 							}
 						}
 						```
+
+						Note:
+
+						Здесь мы можем видеть, как можно использовать observable вместо state компонента.
 					</script>
 				</section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						#### Global state management - Provider
 						
 						```js
@@ -714,10 +743,14 @@
 							}
 						}
 						```
+
+						Note: 
+						
+						Здесь же показана возможность управления состоянием приложения. Здесь происходит подключение store через Provider.
 					</script>
 				</section>
 				<section data-markdown>
-					<script type="text/template">
+					<script type="text/template" data-notes="^Note:">
 						#### Global state management - Injected Component
 						
 						```js
@@ -738,6 +771,10 @@
 							}
 						}
 						```
+
+						Note:
+
+						Здесь происходит подключение (инъекция) store в компонент.
 					</script>
 				</section>
 			</section>
