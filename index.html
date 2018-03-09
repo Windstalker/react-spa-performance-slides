@@ -564,7 +564,7 @@
 
 						В том, что при каждом изменении store, функция mapStateToProps может вернуть абсолютно 
 						новые значения для props компонента, вызывая ненужную перерисовку.
-						В примере todos будет каждый раз новым массивом при каждом изменении store 
+						В примере, todos будет каждый раз новым массивом при каждом изменении store 
 						(даже если изменилась совсем не связанная часть).
 					</script>
 				</section>
@@ -789,14 +789,20 @@
 						<li class="fragment">Limit the error boundaries</li>
 					</ul>
 				</section>
+				<aside class="notes">
+					<a href="https://claudiopro.github.io/react-fiber-vs-stack-demo/">https://claudiopro.github.io/react-fiber-vs-stack-demo/</a>
+				</aside>
 			</section>
 			<section>
-				<h2>Common performance tips</h2>
+				<h2>Common performance optimization tips</h2>
 				<ul>
-					<li>Make you DOM structure simplier</li>
-					<li>Keep components count in DOM as less as possible</li>
-					<li>Do not make any huge computations in <code>render()</code></li>
-					<li>Clear any reactions, timers, delayed functions calls on <code>componentWillUnmount</code></li>
+					<li class="fragment">Make your DOM structure simplier</li>
+					<li class="fragment">Keep count of components in DOM as less as possible</li>
+					<li class="fragment">Do not make any huge computations in <code>render()</code></li>
+					<li class="fragment">Memoize results of heavy computations</li>
+					<li class="fragment">Debounce or throttle frequent state changes</li>
+					<li class="fragment">Clear any reactions, timers, delayed functions calls on <code>componentWillUnmount</code></li>
+					<li class="fragment">Use production build to check performance</li>
 				</ul>
 			</section>
 			<section>
