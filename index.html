@@ -7,7 +7,7 @@
 		<title>reveal.js</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/sky.css">
+		<link rel="stylesheet" href="css/theme/beige.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<!-- <link rel="stylesheet" href="lib/css/zenburn.css"> -->
@@ -72,14 +72,8 @@
 						</aside>
 					</section>
 					<section>
-						<img data-src="./assets/reconciliation.png" alt="Reconciliation">		
+						<img data-src="./assets/reconciliation.png" alt="Reconciliation" style="background: #fff;">		
 						<aside class="notes">
-							Немного подробнее о Reconciliation. Он является частью процесса render, сравнивая новое дерево компонентов с предыдущим.
-							На стадии обновления, когда, например, у компонента изменилось состояние, происходит проверка, а должен ли обновиться этот компонент.
-							В случае если это так shouldComponentUpdate вернет true, и будет выполнен сначала componentWillUpdate, затем render и componentDidUpdate.
-							После render произойдет проверка, а совпадает ли дерево компонента с предыдущим его состоянием? Если нет, то последовательно у 
-							произойдут либо unmount дочерних компонентов, либо mount новых компонентов, либо будет произведен тот же алгоритм при обновлении -
-							shouldComponentUpdate, затем перерисовка.
 							Надо заметить, что операция Reconciliation рекурсивно проходит по всему виртуальному дереву и это происходит
 							<strong>синхронно</strong>, то есть является блокирующей операцией для основного потока.
 						</aside>				
@@ -182,7 +176,7 @@
 					</script>
 			</section>
 			<section>
-				<h2>Weak Points, Myths and Ways To Optimization</h2>
+				<h2>Common mistakes and ways to optimization</h2>
 			</section>
 			<section>
 				<section data-markdown>
@@ -207,8 +201,7 @@
 							Один представляет собой класс унаследованный от React.Component, другой - чистую функцию. 
 							Наверняка, вы использовали оба способа. Как по вашему, какой из этих компонентом
 							будет быстрее в отрисовке? На самом деле, разницы в скорости не будет. Почему? Потому, что по факту 
-							Functional компонент оборачивается в класс React.Component! И является попросту его методом render! 
-							Это один из мифов в которые по незнанию верят начинающие React разработчики.
+							Functional компонент оборачивается в класс React.Component, и является попросту его методом render.
 						</aside>
 				</section>
 				<section>
@@ -787,12 +780,23 @@
 				</a>
 			</section>
 			<section>
-				<h2>What about React 16 aka Fiber?</h2>
-				<p>It's a total rewrite of core algorythm, based on implementation of interruptible stack</p>
+				<section>
+					<h2>What about React 16 aka Fiber?</h2>
+					<p>It's a total rewrite of core algorythm, based on implementation of interruptible stack</p>
+					<ul>
+						<li class="fragment">Work on reconciliation/updates are broken into small chunks (~16ms)</li>
+						<li class="fragment">Prioritizing and scheduling updates, reusing nodes from old tree</li>
+						<li class="fragment">Limit the error boundaries</li>
+					</ul>
+				</section>
+			</section>
+			<section>
+				<h2>Common performance tips</h2>
 				<ul>
-					<li class="fragment">Work on reconciliation/updates are broken into small chunks (~16ms)</li>
-					<li class="fragment">Prioritizing and scheduling updates, reusing nodes from old tree</li>
-					<li class="fragment">Limit the error boundaries</li>
+					<li>Make you DOM structure simplier</li>
+					<li>Keep components count in DOM as less as possible</li>
+					<li>Do not make any huge computations in <code>render()</code></li>
+					<li>Clear any reactions, timers, delayed functions calls on <code>componentWillUnmount</code></li>
 				</ul>
 			</section>
 			<section>
